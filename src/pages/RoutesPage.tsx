@@ -1,20 +1,16 @@
 import { useState } from 'react';
-
-import { useRoute } from '../features/routes/api/useRoute';
-import { RouteMap } from '../features/routes/components/RouteMap';
-import { RouteTimeline } from '../features/routes/components/RouteTimeline';
+import { useNavigate } from 'react-router-dom';
 
 const inputCls =
   'bg-panel border border-edge rounded-lg px-3.5 py-2 text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-primary transition-colors';
 
 export function RoutesPage() {
   const [routeId, setRouteId] = useState('');
-  const [loadedId, setLoadedId] = useState<string | null>(null);
-  const { data: route, isLoading, isError } = useRoute(loadedId);
+  const navigate = useNavigate();
 
   const handleLoad = (e: React.FormEvent) => {
     e.preventDefault();
-    if (routeId.trim()) setLoadedId(routeId.trim());
+    if (routeId.trim()) navigate(`/routes/${routeId.trim()}`);
   };
 
   return (
@@ -34,39 +30,13 @@ export function RoutesPage() {
         </form>
       </div>
 
-      {!loadedId && (
-        <div className="flex flex-col items-center justify-center py-16 gap-2 text-center">
-          <span className="text-5xl mb-2">🗺️</span>
-          <p className="font-semibold text-ink">No route loaded</p>
-          <p className="text-sm text-ink-muted">
-            Enter a Route ID above after running optimization
-          </p>
-        </div>
-      )}
-
-      {loadedId && isLoading && (
-        <div className="flex items-center justify-center gap-3 py-16 text-ink-muted">
-          <div className="w-5 h-5 border-2 border-edge border-t-primary rounded-full animate-spin" />
-          <span>Loading route…</span>
-        </div>
-      )}
-
-      {loadedId && isError && (
-        <div className="flex items-center justify-center py-12 text-sm text-danger">
-          Route not found or failed to load.
-        </div>
-      )}
-
-      {route && (
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-5 min-h-[560px]">
-          <div className="rounded-lg overflow-hidden border border-edge">
-            <RouteMap route={route} />
-          </div>
-          <div className="border border-edge rounded-lg overflow-y-auto">
-            <RouteTimeline route={route} />
-          </div>
-        </div>
-      )}
+      <div className="flex flex-col items-center justify-center py-16 gap-2 text-center">
+        <span className="text-5xl mb-2">🗺️</span>
+        <p className="font-semibold text-ink">No route loaded</p>
+        <p className="text-sm text-ink-muted">
+          Enter a Route ID above after running optimization to view its map, timeline, and AI chat
+        </p>
+      </div>
     </div>
   );
 }

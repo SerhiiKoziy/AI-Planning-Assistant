@@ -71,19 +71,20 @@ export function RouteMap({ route }: Props) {
     if (!mapInstance.current || !route) return;
     const map = mapInstance.current;
     const stopsWithCoords = route.stops.filter(
-      (s) => (s as any).latitude != null && (s as any).longitude != null,
+      (s): s is typeof s & { latitude: number; longitude: number } =>
+        s.latitude != null && s.longitude != null,
     );
     if (stopsWithCoords.length === 0) return;
 
     const bounds = new window.google!.maps.LatLngBounds();
     stopsWithCoords.forEach((stop, i) => {
-      const pos = { lat: (stop as any).latitude, lng: (stop as any).longitude };
+      const pos = { lat: stop.latitude, lng: stop.longitude };
       bounds.extend(pos);
       new window.google!.maps.Marker({ position: pos, map, label: String(i + 1), title: `Stop ${stop.sequence}` });
     });
 
     new window.google!.maps.Polyline({
-      path: stopsWithCoords.map((s) => ({ lat: (s as any).latitude, lng: (s as any).longitude })),
+      path: stopsWithCoords.map((s) => ({ lat: s.latitude, lng: s.longitude })),
       geodesic: true,
       strokeColor: '#2f9e5c',
       strokeOpacity: 0.9,

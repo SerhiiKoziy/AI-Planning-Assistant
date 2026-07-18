@@ -5,6 +5,7 @@ import { DeliveriesPage } from '../pages/DeliveriesPage';
 import { DriversPage } from '../pages/DriversPage';
 import { LoginPage } from '../pages/LoginPage';
 import { RegisterPage } from '../pages/RegisterPage';
+import { RouteDetailPage } from '../pages/RouteDetailPage';
 import { RoutesPage } from '../pages/RoutesPage';
 import { useAuthStore } from '../store/authStore';
 
@@ -51,6 +52,14 @@ export function AppRouter() {
         element={
           <PrivateRoute>
             <RoutesPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/routes/:id"
+        element={
+          <PrivateRoute>
+            <RouteDetailPage />
           </PrivateRoute>
         }
       />

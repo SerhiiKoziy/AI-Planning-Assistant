@@ -5,6 +5,9 @@ export interface RouteStop {
   estimated_arrival: string;
   estimated_departure: string;
   distance_from_previous_km: number;
+  status: string;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export interface Route {

@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS custom properties (used by auth forms + legacy components) ──────── */
 :root {
   --color-bg: #0b1712;
   --color-bg-elevated: #112016;
@@ -38,52 +43,19 @@ a {
   color: var(--color-primary);
 }
 
-/* --- App shell / sidebar --- */
-
+/* ─── App shell ──────────────────────────────────────────────────────────── */
 .app-shell {
   display: flex;
   min-height: 100vh;
 }
 
-.app-sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  background: var(--color-bg-elevated);
-  border-right: 1px solid var(--color-border);
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.app-sidebar__brand {
-  font-weight: 600;
-  font-size: 1.05rem;
-  color: var(--color-text);
-  margin-bottom: 20px;
-}
-
-.app-sidebar a {
-  display: block;
-  padding: 10px 12px;
-  border-radius: var(--radius);
-  color: var(--color-text-muted);
-  text-decoration: none;
-  font-size: 0.95rem;
-}
-
-.app-sidebar a:hover {
-  background: var(--color-surface-hover);
-  color: var(--color-text);
-}
-
 .app-content {
   flex: 1;
   padding: 32px;
+  min-width: 0;
 }
 
-/* --- Card --- */
-
+/* ─── Legacy Card component ───────────────────────────────────────────────── */
 .card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -101,8 +73,7 @@ a {
   padding: 20px;
 }
 
-/* --- Buttons --- */
-
+/* ─── Buttons (used by auth forms) ───────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -114,9 +85,7 @@ a {
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
-  transition:
-    background 0.15s ease,
-    opacity 0.15s ease;
+  transition: background 0.15s ease, opacity 0.15s ease;
 }
 
 .btn:disabled {
@@ -147,8 +116,7 @@ a {
   width: 100%;
 }
 
-/* --- Forms --- */
-
+/* ─── Form fields (used by auth forms) ──────────────────────────────────── */
 .field {
   display: flex;
   flex-direction: column;
@@ -161,16 +129,22 @@ a {
   color: var(--color-text-muted);
 }
 
-.field input {
+.field input,
+.field select,
+.field textarea {
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 10px 12px;
   font-size: 0.95rem;
   color: var(--color-text);
+  width: 100%;
+  font-family: inherit;
 }
 
-.field input:focus {
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
   outline: none;
   border-color: var(--color-primary);
 }
@@ -194,8 +168,7 @@ a {
   margin-bottom: 16px;
 }
 
-/* --- Auth pages (login / register) --- */
-
+/* ─── Auth pages ──────────────────────────────────────────────────────────── */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -234,4 +207,14 @@ a {
   text-align: center;
   font-size: 0.88rem;
   color: var(--color-text-muted);
+}
+
+/* ─── Skeleton pulse animation ──────────────────────────────────────────── */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.animate-skeleton {
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
 }

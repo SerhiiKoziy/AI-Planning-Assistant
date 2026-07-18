@@ -1,21 +1,60 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import { DashboardPage } from '../pages/DashboardPage';
 import { DeliveriesPage } from '../pages/DeliveriesPage';
 import { DriversPage } from '../pages/DriversPage';
-import { RoutesPage } from '../pages/RoutesPage';
 import { LoginPage } from '../pages/LoginPage';
 import { RegisterPage } from '../pages/RegisterPage';
+import { RoutesPage } from '../pages/RoutesPage';
+import { useAuthStore } from '../store/authStore';
+
+function PrivateRoute({ children }: { children: React.ReactElement }) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const location = useLocation();
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  return children;
+}
 
 export function AppRouter() {
   return (
     <Routes>
-      <Route path="/" element={<DashboardPage />} />
-      <Route path="/deliveries" element={<DeliveriesPage />} />
-      <Route path="/drivers" element={<DriversPage />} />
-      <Route path="/routes" element={<RoutesPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <DashboardPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/deliveries"
+        element={
+          <PrivateRoute>
+            <DeliveriesPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/drivers"
+        element={
+          <PrivateRoute>
+            <DriversPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/routes"
+        element={
+          <PrivateRoute>
+            <RoutesPage />
+          </PrivateRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

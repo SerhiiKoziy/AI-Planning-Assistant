@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 import { apiClient } from '../../../api/client';
 import { useAuthStore } from '../../../store/authStore';
@@ -31,15 +32,22 @@ async function register(request: RegisterRequest): Promise<AuthTokens> {
 export function useAuth() {
   const storeLogin = useAuthStore((state) => state.login);
   const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
 
   const loginMutation = useMutation({
     mutationFn: login,
-    onSuccess: storeLogin,
+    onSuccess: (tokens) => {
+      storeLogin(tokens);
+      navigate('/');
+    },
   });
 
   const registerMutation = useMutation({
     mutationFn: register,
-    onSuccess: storeLogin,
+    onSuccess: (tokens) => {
+      storeLogin(tokens);
+      navigate('/');
+    },
   });
 
   return { login: loginMutation, register: registerMutation, logout };

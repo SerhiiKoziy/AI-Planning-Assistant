@@ -3,7 +3,11 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { AppRouter } from './AppRouter';
 
-const AUTH_ROUTES = ['/login', '/register'];
+// Routes rendered without the authenticated app shell (sidebar), regardless
+// of auth state — /verify-email must stay shell-less even after it flips
+// isAuthenticated to true mid-page, or AppRouter remounts into the sidebar
+// branch and the verification result flashes back to a loading state.
+const AUTH_ROUTES = ['/login', '/register', '/verify-email'];
 
 const NAV_LINKS = [
   { to: '/', label: 'Dashboard', end: true },

@@ -13,6 +13,8 @@ const NAV_LINKS = [
   { to: '/', label: 'Dashboard', end: true },
   { to: '/deliveries', label: 'Deliveries', end: false },
   { to: '/drivers', label: 'Drivers', end: false },
+  { to: '/depots', label: 'Depots', end: false },
+  { to: '/vehicles', label: 'Vehicles', end: false },
   { to: '/routes', label: 'Routes', end: false },
 ];
 

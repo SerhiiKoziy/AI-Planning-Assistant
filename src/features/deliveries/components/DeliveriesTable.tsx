@@ -24,7 +24,13 @@ const PRIORITY_LABELS: Record<DeliveryPriority, string> = {
 const inputCls =
   'bg-panel border border-edge rounded-lg px-3.5 py-2 text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:border-primary transition-colors';
 
-export function DeliveriesTable() {
+interface Props {
+  selectedIds: Set<string>;
+  onToggle: (id: string) => void;
+  onToggleAll: (ids: string[]) => void;
+}
+
+export function DeliveriesTable({ selectedIds, onToggle, onToggleAll }: Props) {
   const { data: deliveries = [], isLoading, isError } = useDeliveries();
   const deleteDelivery = useDeleteDelivery();
   const [search, setSearch] = useState('');
@@ -117,6 +123,20 @@ export function DeliveriesTable() {
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr>
+                <th className="bg-panel px-4 py-2.5 border-b border-edge w-10">
+                  <input
+                    type="checkbox"
+                    checked={filtered.length > 0 && filtered.every((d) => selectedIds.has(d.id))}
+                    ref={(el) => {
+                      if (el) {
+                        el.indeterminate =
+                          filtered.some((d) => selectedIds.has(d.id)) &&
+                          !filtered.every((d) => selectedIds.has(d.id));
+                      }
+                    }}
+                    onChange={() => onToggleAll(filtered.map((d) => d.id))}
+                  />
+                </th>
                 {['Customer', 'Address', 'Priority', 'Status', 'Time Window', 'Unload', ''].map(
                   (h) => (
                     <th
@@ -135,6 +155,13 @@ export function DeliveriesTable() {
                   key={delivery.id}
                   className="border-b border-edge last:border-b-0 hover:bg-card-hover transition-colors"
                 >
+                  <td className="px-4 py-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(delivery.id)}
+                      onChange={() => onToggle(delivery.id)}
+                    />
+                  </td>
                   <td className="px-4 py-3">
                     <div className="font-medium text-ink">{delivery.customer_name}</div>
                     {delivery.phone && (

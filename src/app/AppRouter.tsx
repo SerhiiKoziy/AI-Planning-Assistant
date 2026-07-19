@@ -2,11 +2,13 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import { DashboardPage } from '../pages/DashboardPage';
 import { DeliveriesPage } from '../pages/DeliveriesPage';
+import { DepotsPage } from '../pages/DepotsPage';
 import { DriversPage } from '../pages/DriversPage';
 import { LoginPage } from '../pages/LoginPage';
 import { RegisterPage } from '../pages/RegisterPage';
 import { RouteDetailPage } from '../pages/RouteDetailPage';
 import { RoutesPage } from '../pages/RoutesPage';
+import { VehiclesPage } from '../pages/VehiclesPage';
 import { VerifyEmailPage } from '../pages/VerifyEmailPage';
 import { useAuthStore } from '../store/authStore';
 
@@ -46,6 +48,22 @@ export function AppRouter() {
         element={
           <PrivateRoute>
             <DriversPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/depots"
+        element={
+          <PrivateRoute>
+            <DepotsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/vehicles"
+        element={
+          <PrivateRoute>
+            <VehiclesPage />
           </PrivateRoute>
         }
       />

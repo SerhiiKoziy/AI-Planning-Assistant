@@ -2,25 +2,14 @@ import type { Route, RouteStop } from '../types';
 
 interface Props {
   route: Route;
-  deliveryNames?: Record<string, string>;
 }
 
 function fmtTime(t: string) {
   return t.slice(0, 5);
 }
 
-function StopItem({
-  stop,
-  index,
-  isLast,
-  deliveryNames,
-}: {
-  stop: RouteStop;
-  index: number;
-  isLast: boolean;
-  deliveryNames?: Record<string, string>;
-}) {
-  const name = deliveryNames?.[stop.delivery_id] ?? `Stop ${stop.sequence}`;
+function StopItem({ stop, index, isLast }: { stop: RouteStop; index: number; isLast: boolean }) {
+  const name = stop.customer_name ?? `Stop ${stop.sequence}`;
   return (
     <div className="flex gap-3">
       {/* Connector */}
@@ -36,7 +25,8 @@ function StopItem({
         <div className="font-mono text-xs font-semibold text-primary">
           {fmtTime(stop.estimated_arrival)}
         </div>
-        <div className="text-sm text-ink mt-0.5">{name}</div>
+        <div className="text-base font-semibold text-ink mt-0.5">{name}</div>
+        {stop.address && <div className="text-xs text-ink-muted mt-0.5">{stop.address}</div>}
         {stop.distance_from_previous_km > 0 && (
           <div className="text-xs text-ink-muted mt-0.5">
             {stop.distance_from_previous_km.toFixed(1)} km from previous
@@ -47,7 +37,7 @@ function StopItem({
   );
 }
 
-export function RouteTimeline({ route, deliveryNames }: Props) {
+export function RouteTimeline({ route }: Props) {
   const sorted = [...route.stops].sort((a, b) => a.sequence - b.sequence);
 
   return (
@@ -73,13 +63,7 @@ export function RouteTimeline({ route, deliveryNames }: Props) {
       {/* Stops */}
       <div>
         {sorted.map((stop, i) => (
-          <StopItem
-            key={stop.id}
-            stop={stop}
-            index={i}
-            isLast={i === sorted.length - 1}
-            deliveryNames={deliveryNames}
-          />
+          <StopItem key={stop.id} stop={stop} index={i} isLast={i === sorted.length - 1} />
         ))}
       </div>
     </div>

@@ -8,6 +8,8 @@ export interface RouteStop {
   status: string;
   latitude: number | null;
   longitude: number | null;
+  customer_name: string | null;
+  address: string | null;
 }
 
 export interface Route {

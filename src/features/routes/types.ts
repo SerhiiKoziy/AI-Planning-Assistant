@@ -33,9 +33,20 @@ export interface OptimizeRequest {
   return_to_depot?: boolean;
 }
 
+export interface DeliveryRef {
+  id: string;
+  customer_name: string | null;
+  address: string | null;
+}
+
+export interface VehicleRef {
+  id: string;
+  plate_number: string | null;
+}
+
 export interface OptimizeResult {
   routes: Route[];
-  unassigned_delivery_ids: string[];
-  skipped_not_geocoded: string[];
-  vehicles_without_driver: string[];
+  unassigned_deliveries: DeliveryRef[];
+  skipped_not_geocoded: DeliveryRef[];
+  vehicles_without_driver: VehicleRef[];
 }

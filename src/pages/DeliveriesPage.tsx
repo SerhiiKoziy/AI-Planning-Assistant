@@ -2,30 +2,48 @@ import { useState } from 'react';
 
 import { Button } from '../components/shared';
 import { CreateDeliveryModal, DeliveriesTable } from '../features/deliveries';
-import { GenerateRouteModal } from '../features/routes';
+import { GenerateRouteModal, MAX_ROUTE_DELIVERIES } from '../features/routes';
 
 export function DeliveriesPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [showGenerateRoute, setShowGenerateRoute] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectionNotice, setSelectionNotice] = useState<string | null>(null);
 
   const toggle = (id: string) => {
     setSelectedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
+      if (prev.has(id)) {
+        const next = new Set(prev);
+        next.delete(id);
+        setSelectionNotice(null);
+        return next;
+      }
+      if (prev.size >= MAX_ROUTE_DELIVERIES) {
+        setSelectionNotice(`You can select up to ${MAX_ROUTE_DELIVERIES} deliveries for a route.`);
+        return prev;
+      }
+      setSelectionNotice(null);
+      return new Set(prev).add(id);
     });
   };
 
   const toggleAll = (ids: string[]) => {
     setSelectedIds((prev) => {
-      const allSelected = ids.length > 0 && ids.every((id) => prev.has(id));
+      const capped = ids.length > MAX_ROUTE_DELIVERIES ? ids.slice(0, MAX_ROUTE_DELIVERIES) : ids;
+      const allSelected = capped.length > 0 && capped.every((id) => prev.has(id));
       if (allSelected) {
         const next = new Set(prev);
         ids.forEach((id) => next.delete(id));
+        setSelectionNotice(null);
         return next;
       }
+      if (ids.length > MAX_ROUTE_DELIVERIES) {
+        setSelectionNotice(
+          `Only the first ${MAX_ROUTE_DELIVERIES} deliveries were selected — maximum ${MAX_ROUTE_DELIVERIES} allowed.`,
+        );
+        return new Set(capped);
+      }
+      setSelectionNotice(null);
       return new Set([...prev, ...ids]);
     });
   };
@@ -43,7 +61,13 @@ export function DeliveriesPage() {
           <Button onClick={() => setShowCreate(true)}>+ New Delivery</Button>
         </div>
       </div>
-      <DeliveriesTable selectedIds={selectedIds} onToggle={toggle} onToggleAll={toggleAll} />
+      {selectionNotice && <p className="form-error">{selectionNotice}</p>}
+      <DeliveriesTable
+        selectedIds={selectedIds}
+        onToggle={toggle}
+        onToggleAll={toggleAll}
+        selectionLimitReached={selectedIds.size >= MAX_ROUTE_DELIVERIES}
+      />
       <CreateDeliveryModal isOpen={showCreate} onClose={() => setShowCreate(false)} />
       <GenerateRouteModal
         isOpen={showGenerateRoute}

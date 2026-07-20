@@ -99,21 +99,53 @@ export function GenerateRouteModal({ isOpen, onClose, deliveryIds, onGenerated }
             </div>
           ))}
 
-          {result.unassigned_delivery_ids.length > 0 && (
-            <p className="text-danger">
-              {result.unassigned_delivery_ids.length} deliveries could not be assigned to any vehicle.
-            </p>
+          {result.unassigned_deliveries.length > 0 && (
+            <div className="text-danger">
+              <p className="m-0">
+                {result.unassigned_deliveries.length} deliver
+                {result.unassigned_deliveries.length > 1 ? 'ies' : 'y'} could not be assigned to any
+                vehicle:
+              </p>
+              <ul className="m-0 pl-4">
+                {result.unassigned_deliveries.map((d) => (
+                  <li key={d.id}>
+                    {d.customer_name || 'Unnamed'}
+                    {d.address ? ` — ${d.address}` : ''}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
           {result.skipped_not_geocoded.length > 0 && (
-            <p className="text-danger">
-              {result.skipped_not_geocoded.length} deliveries were skipped (address not geocoded).
-            </p>
+            <div className="text-danger">
+              <p className="m-0">
+                {result.skipped_not_geocoded.length} deliver
+                {result.skipped_not_geocoded.length > 1 ? 'ies were' : 'y was'} skipped (address not
+                geocoded):
+              </p>
+              <ul className="m-0 pl-4">
+                {result.skipped_not_geocoded.map((d) => (
+                  <li key={d.id}>
+                    {d.customer_name || 'Unnamed'}
+                    {d.address ? ` — ${d.address}` : ''}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
           {result.vehicles_without_driver.length > 0 && (
-            <p className="text-danger">
-              {result.vehicles_without_driver.length} selected vehicles have no driver assigned and
-              were skipped.
-            </p>
+            <div className="text-danger">
+              <p className="m-0">
+                {result.vehicles_without_driver.length} selected vehicle
+                {result.vehicles_without_driver.length > 1 ? 's have' : ' has'} no driver assigned and
+                {result.vehicles_without_driver.length > 1 ? ' were' : ' was'} skipped:
+              </p>
+              <ul className="m-0 pl-4">
+                {result.vehicles_without_driver.map((v) => (
+                  <li key={v.id}>{v.plate_number || v.id}</li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
       ) : (

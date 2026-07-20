@@ -28,9 +28,10 @@ interface Props {
   selectedIds: Set<string>;
   onToggle: (id: string) => void;
   onToggleAll: (ids: string[]) => void;
+  selectionLimitReached?: boolean;
 }
 
-export function DeliveriesTable({ selectedIds, onToggle, onToggleAll }: Props) {
+export function DeliveriesTable({ selectedIds, onToggle, onToggleAll, selectionLimitReached }: Props) {
   const { data: deliveries = [], isLoading, isError } = useDeliveries();
   const deleteDelivery = useDeleteDelivery();
   const [search, setSearch] = useState('');
@@ -159,6 +160,7 @@ export function DeliveriesTable({ selectedIds, onToggle, onToggleAll }: Props) {
                     <input
                       type="checkbox"
                       checked={selectedIds.has(delivery.id)}
+                      disabled={selectionLimitReached && !selectedIds.has(delivery.id)}
                       onChange={() => onToggle(delivery.id)}
                     />
                   </td>

@@ -7,10 +7,14 @@ export interface DashboardOverview {
   activeDrivers: number;
   totalDistanceKm: number;
   lateDeliveries: number;
+  activeVehicles: number;
+  driversOnRouteToday: number;
+  driversIdleToday: number;
+  vehiclesInUseToday: number;
+  vehiclesAvailableToday: number;
 }
 
 async function fetchDashboardOverview(): Promise<DashboardOverview> {
-  // TODO: wire to real backend endpoint once available
   const { data } = await apiClient.get<DashboardOverview>('/dashboard/overview');
   return data;
 }

@@ -4,6 +4,7 @@ import { DashboardPage } from '../pages/DashboardPage';
 import { DeliveriesPage } from '../pages/DeliveriesPage';
 import { DepotsPage } from '../pages/DepotsPage';
 import { DriversPage } from '../pages/DriversPage';
+import { LandingPage } from '../pages/LandingPage';
 import { LoginPage } from '../pages/LoginPage';
 import { RegisterPage } from '../pages/RegisterPage';
 import { RouteDetailPage } from '../pages/RouteDetailPage';
@@ -21,20 +22,21 @@ export function PrivateRoute({ children }: { children: React.ReactElement }) {
   return children;
 }
 
+// The root route has no auth gate: it shows the dashboard when logged in,
+// and a public marketing landing page otherwise (instead of redirecting to
+// /login like every other route).
+function HomeRoute() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  return isAuthenticated ? <DashboardPage /> : <LandingPage />;
+}
+
 export function AppRouter() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/verify-email" element={<VerifyEmailPage />} />
-      <Route
-        path="/"
-        element={
-          <PrivateRoute>
-            <DashboardPage />
-          </PrivateRoute>
-        }
-      />
+      <Route path="/" element={<HomeRoute />} />
       <Route
         path="/deliveries"
         element={

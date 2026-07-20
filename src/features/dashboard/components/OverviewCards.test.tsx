@@ -20,7 +20,7 @@ describe('OverviewCards', () => {
 
     const { container } = render(<OverviewCards />);
 
-    expect(container.querySelectorAll('.animate-skeleton')).toHaveLength(4);
+    expect(container.querySelectorAll('.animate-skeleton')).toHaveLength(5);
   });
 
   it('renders an error message when the query fails', () => {
@@ -42,6 +42,11 @@ describe('OverviewCards', () => {
         activeDrivers: 3,
         totalDistanceKm: 45.6,
         lateDeliveries: 2,
+        activeVehicles: 4,
+        driversOnRouteToday: 2,
+        driversIdleToday: 1,
+        vehiclesInUseToday: 3,
+        vehiclesAvailableToday: 1,
       },
       isLoading: false,
       isError: false,
@@ -53,5 +58,8 @@ describe('OverviewCards', () => {
     expect(screen.getByText('3')).toBeInTheDocument();
     expect(screen.getByText('45.6 km')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByText('4')).toBeInTheDocument();
+    expect(screen.getByText('2 on route, 1 idle')).toBeInTheDocument();
+    expect(screen.getByText('3 in use, 1 available')).toBeInTheDocument();
   });
 });

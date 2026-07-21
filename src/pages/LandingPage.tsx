@@ -76,11 +76,8 @@ export function LandingPage() {
               AI Delivery Planner
             </div>
             <div className="flex items-center gap-3">
-              <Link to="/login" className="text-sm text-ink-muted hover:text-ink no-underline">
-                Log in
-              </Link>
-              <Link to="/register">
-                <Button variant="primary">Get started free</Button>
+              <Link to="/login">
+                <Button variant="primary">Log in</Button>
               </Link>
             </div>
           </header>

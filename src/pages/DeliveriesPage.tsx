@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Button } from '../components/shared';
 import { CreateDeliveryModal, DeliveriesTable } from '../features/deliveries';
+import { useQuotaExhausted } from '../features/organization';
 import { GenerateRouteModal, MAX_ROUTE_DELIVERIES } from '../features/routes';
 
 export function DeliveriesPage() {
@@ -9,6 +10,7 @@ export function DeliveriesPage() {
   const [showGenerateRoute, setShowGenerateRoute] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [selectionNotice, setSelectionNotice] = useState<string | null>(null);
+  const quotaExhausted = useQuotaExhausted();
 
   const toggle = (id: string) => {
     setSelectedIds((prev) => {
@@ -54,13 +56,29 @@ export function DeliveriesPage() {
         <h1 className="text-2xl font-bold text-ink m-0">Deliveries</h1>
         <div className="flex items-center gap-2.5">
           {selectedIds.size > 0 && (
-            <Button variant="secondary" onClick={() => setShowGenerateRoute(true)}>
+            <Button
+              variant="secondary"
+              onClick={() => setShowGenerateRoute(true)}
+              disabled={quotaExhausted}
+              title={quotaExhausted ? 'Trial request limit reached — upgrade your plan' : undefined}
+            >
               Generate Route ({selectedIds.size})
             </Button>
           )}
-          <Button onClick={() => setShowCreate(true)}>+ New Delivery</Button>
+          <Button
+            onClick={() => setShowCreate(true)}
+            disabled={quotaExhausted}
+            title={quotaExhausted ? 'Trial request limit reached — upgrade your plan' : undefined}
+          >
+            + New Delivery
+          </Button>
         </div>
       </div>
+      {quotaExhausted && (
+        <p className="form-error">
+          You've reached your plan's request limit. Upgrade your plan to keep going.
+        </p>
+      )}
       {selectionNotice && <p className="form-error">{selectionNotice}</p>}
       <DeliveriesTable
         selectedIds={selectedIds}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Button } from '../../../components/shared';
+import { useQuotaExhausted } from '../../organization';
 import { getApiErrorMessage } from '../../../utils/getApiErrorMessage';
 import { useReplan } from '../api/useReplan';
 import type { StopDiffEntry } from '../types';
@@ -45,6 +46,7 @@ export function ReplanPanel({ routeId }: Props) {
   const [previewMessage, setPreviewMessage] = useState<string | null>(null);
   const [stage, setStage] = useState<Stage>('idle');
   const replan = useReplan(routeId);
+  const quotaExhausted = useQuotaExhausted();
 
   const result = replan.data;
   const changedStops = result?.diff.filter((entry) => entry.change !== 'unchanged') ?? [];
@@ -52,7 +54,7 @@ export function ReplanPanel({ routeId }: Props) {
   const handlePreview = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = message.trim();
-    if (!trimmed || replan.isPending) return;
+    if (!trimmed || replan.isPending || quotaExhausted) return;
     setPreviewMessage(trimmed);
     replan.mutate(
       { route_id: routeId, message: trimmed, dry_run: true },
@@ -96,12 +98,18 @@ export function ReplanPanel({ routeId }: Props) {
             placeholder="e.g. Customer at stop 3 is unreachable, or driver is running 20 minutes late"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            disabled={replan.isPending}
+            disabled={replan.isPending || quotaExhausted}
           />
-          <Button type="submit" disabled={replan.isPending || !message.trim()}>
+          <Button type="submit" disabled={replan.isPending || quotaExhausted || !message.trim()}>
             {replan.isPending ? 'Interpreting…' : 'Preview'}
           </Button>
         </form>
+      )}
+
+      {quotaExhausted && (
+        <p className="text-sm text-danger">
+          Trial request limit reached — upgrade your plan to keep using AI replanning.
+        </p>
       )}
 
       {replan.isError && (
@@ -178,7 +186,7 @@ export function ReplanPanel({ routeId }: Props) {
 
               {stage === 'previewed' && (
                 <div className="flex gap-2">
-                  <Button onClick={handleApply} disabled={replan.isPending}>
+                  <Button onClick={handleApply} disabled={replan.isPending || quotaExhausted}>
                     {replan.isPending ? 'Applying…' : 'Apply changes'}
                   </Button>
                   <Button variant="secondary" onClick={handleReset} disabled={replan.isPending}>

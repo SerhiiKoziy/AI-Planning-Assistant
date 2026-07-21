@@ -27,6 +27,39 @@ const STEPS = [
   },
 ];
 
+const BEFORE_AFTER_METRICS = [
+  {
+    icon: '🕒',
+    label: 'Route planning time',
+    without: '2–3 hours of manual work every morning',
+    withApp: 'Minutes — routes build automatically',
+  },
+  {
+    icon: '⏳',
+    label: 'Customer waiting time',
+    without: 'Wide time windows and frequent delays',
+    withApp: 'Tight, accurate ETAs and fewer late stops',
+  },
+  {
+    icon: '👷',
+    label: 'Driver working hours',
+    without: 'Overtime from inefficient sequencing',
+    withApp: 'Hours saved — shifts respected automatically',
+  },
+  {
+    icon: '⛽',
+    label: 'Fuel spend',
+    without: 'Extra miles from suboptimal routes',
+    withApp: 'Lower fuel costs from shorter routes',
+  },
+  {
+    icon: '📦',
+    label: 'Deliveries per day',
+    without: 'Fewer stops fit in the same shift',
+    withApp: 'More deliveries completed in the same shift',
+  },
+];
+
 const VALUE_PROPS = [
   {
     icon: '⏱️',
@@ -118,6 +151,87 @@ export function LandingPage() {
                 <p className="text-sm text-ink-muted m-0">{step.description}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="max-w-5xl mx-auto px-6 pb-20">
+          <h2 className="text-2xl font-bold text-center mb-3">See the difference</h2>
+          <p className="text-ink-muted text-center max-w-2xl mx-auto mb-10">
+            The same drivers, vehicles, and deliveries — planned by hand versus planned by AI.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="bg-card border border-edge rounded-lg shadow-card overflow-hidden">
+              <div className="px-5 py-4 border-b border-edge flex items-center gap-2">
+                <span className="text-xl leading-none">✗</span>
+                <h3 className="font-semibold m-0">Without AI Delivery Planner</h3>
+              </div>
+              <div className="divide-y divide-edge">
+                {BEFORE_AFTER_METRICS.map((metric) => (
+                  <div key={metric.label} className="px-5 py-4 flex items-start gap-3">
+                    <span className="text-2xl leading-none">{metric.icon}</span>
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-ink-muted mb-1">
+                        {metric.label}
+                      </div>
+                      <p className="text-sm m-0">{metric.without}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-card border border-primary rounded-lg shadow-card overflow-hidden">
+              <div className="px-5 py-4 border-b border-edge flex items-center gap-2 bg-primary-muted">
+                <span className="text-xl leading-none">✓</span>
+                <h3 className="font-semibold m-0">With AI Delivery Planner</h3>
+              </div>
+              <div className="divide-y divide-edge">
+                {BEFORE_AFTER_METRICS.map((metric) => (
+                  <div key={metric.label} className="px-5 py-4 flex items-start gap-3">
+                    <span className="text-2xl leading-none">{metric.icon}</span>
+                    <div>
+                      <div className="text-xs uppercase tracking-wide text-ink-muted mb-1">
+                        {metric.label}
+                      </div>
+                      <p className="text-sm m-0">{metric.withApp}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="max-w-5xl mx-auto px-6 pb-20">
+          <h2 className="text-2xl font-bold text-center mb-3">Same deliveries, two different routes</h2>
+          <p className="text-ink-muted text-center max-w-2xl mx-auto mb-10">
+            See how our optimizer redraws a driver&rsquo;s day — same stops, far less driving.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <figure className="m-0">
+              <div className="rounded-lg border border-edge shadow-card overflow-hidden">
+                <img
+                  src="/images/before-after/route-without-app.webp"
+                  alt="A long, zig-zagging delivery route planned by hand"
+                  className="w-full h-auto"
+                />
+              </div>
+              <figcaption className="mt-3 text-center text-sm text-ink-muted">
+                ✗ Without AI Delivery Planner — a longer, criss-crossing route
+              </figcaption>
+            </figure>
+            <figure className="m-0">
+              <div className="rounded-lg border border-primary shadow-card overflow-hidden">
+                <img
+                  src="/images/before-after/route-with-app.webp"
+                  alt="A short, optimized delivery route planned by the AI"
+                  className="w-full h-auto"
+                />
+              </div>
+              <figcaption className="mt-3 text-center text-sm text-ink-muted">
+                ✓ With AI Delivery Planner — a shorter, optimized route
+              </figcaption>
+            </figure>
           </div>
         </section>
 

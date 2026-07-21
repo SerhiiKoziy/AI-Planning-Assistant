@@ -1,6 +1,9 @@
-import { Badge } from '../../../components/shared';
+import { useState } from 'react';
+
+import { Badge, Button } from '../../../components/shared';
 import { useOrganization } from '../api/useOrganization';
 import type { SubscriptionPlan } from '../types';
+import { ChangePlanModal } from './ChangePlanModal';
 
 const PLAN_LABELS: Record<SubscriptionPlan, string> = {
   trial: 'Trial',
@@ -12,6 +15,7 @@ const PLAN_LABELS: Record<SubscriptionPlan, string> = {
 
 export function SubscriptionCard() {
   const { data, isLoading, isError } = useOrganization();
+  const [isChangingPlan, setIsChangingPlan] = useState(false);
 
   if (isLoading) {
     return <div className="h-[132px] rounded-lg border border-edge bg-card animate-skeleton" />;
@@ -35,9 +39,14 @@ export function SubscriptionCard() {
     <div className="bg-card border border-edge rounded-lg p-5 shadow-card flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <span className="text-xs text-ink-muted uppercase tracking-wide">Subscription</span>
-        <Badge variant={data.subscriptionPlan === 'trial' ? 'default' : 'vip'}>
-          {PLAN_LABELS[data.subscriptionPlan]} plan
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant={data.subscriptionPlan === 'trial' ? 'default' : 'vip'}>
+            {PLAN_LABELS[data.subscriptionPlan]} plan
+          </Badge>
+          <Button variant="secondary" onClick={() => setIsChangingPlan(true)}>
+            Change plan
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -64,6 +73,12 @@ export function SubscriptionCard() {
           </>
         )}
       </div>
+
+      <ChangePlanModal
+        isOpen={isChangingPlan}
+        onClose={() => setIsChangingPlan(false)}
+        currentPlan={data.subscriptionPlan}
+      />
     </div>
   );
 }

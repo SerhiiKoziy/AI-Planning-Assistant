@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '../../../components/shared';
+import { useQuotaExhausted } from '../../organization';
 import { getApiErrorMessage } from '../../../utils/getApiErrorMessage';
 import { useChatHistory } from '../api/useChatHistory';
 import { useSendChatMessage } from '../api/useSendChatMessage';
@@ -15,6 +16,7 @@ const inputCls =
 export function ChatPanel({ routeId }: Props) {
   const { data: messages = [], isLoading, isError } = useChatHistory(routeId);
   const sendMessage = useSendChatMessage(routeId);
+  const quotaExhausted = useQuotaExhausted();
   const [text, setText] = useState('');
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +27,7 @@ export function ChatPanel({ routeId }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const message = text.trim();
-    if (!message || sendMessage.isPending) return;
+    if (!message || sendMessage.isPending || quotaExhausted) return;
     setText('');
     sendMessage.mutate({ route_id: routeId, message });
   };
@@ -81,15 +83,21 @@ export function ChatPanel({ routeId }: Props) {
         </p>
       )}
 
+      {quotaExhausted && (
+        <p className="px-4 pb-2 text-sm text-danger">
+          Trial request limit reached — upgrade your plan to keep chatting.
+        </p>
+      )}
+
       <form className="flex gap-2 p-3 border-t border-edge" onSubmit={handleSubmit}>
         <input
           className={`${inputCls} flex-1`}
           placeholder="Ask about this route…"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          disabled={sendMessage.isPending}
+          disabled={sendMessage.isPending || quotaExhausted}
         />
-        <Button type="submit" disabled={sendMessage.isPending || !text.trim()}>
+        <Button type="submit" disabled={sendMessage.isPending || quotaExhausted || !text.trim()}>
           Send
         </Button>
       </form>
